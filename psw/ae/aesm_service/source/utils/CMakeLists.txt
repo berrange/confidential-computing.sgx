@@ -20,7 +20,7 @@ target_include_directories(utils PRIVATE
     ${PROJECT_SOURCE_DIR}/../../../../common/inc/internal
     ${PROJECT_SOURCE_DIR}/../../../../external/rdrand
     ${PROJECT_SOURCE_DIR}/../../data/constants/linux
-    ${PROJECT_SOURCE_DIR}/../../../../prebuilt/dcap/openssl/inc
+    ${OPENSSL_CRYPTO_CFLAGS}
     # [SDK-X-REPO-INCLUDE] Cross-repo dep on SDK submodule internal headers (encapsulation smell, to be removed).
     # Actually used by this target: crypto_wrapper.h, se_memcpy.h, se_wrapper.h, se_time.h, sgx_memset_s.h, sgx_read_rand.h.
     ${PROJECT_SOURCE_DIR}/../../../../sdk/common/inc/internal
@@ -33,7 +33,7 @@ target_compile_definitions(utils PRIVATE
 set_property(TARGET utils APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-z,defs")
 
 target_link_libraries(utils
-    ${PROJECT_SOURCE_DIR}/../../../../prebuilt/dcap/openssl/lib/linux64/libcrypto.a
+    ${OPENSSL_CRYPTO_LIBS}
     oal
     ${CMAKE_SOURCE_DIR}/../../../../external/rdrand/src/librdrand.a
 )
