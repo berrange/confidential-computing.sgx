@@ -62,9 +62,6 @@ AESMD_CONF=aesmd.service
 AESMD_CONF_DEL=aesmd.conf
 AESMD_CONF_PATH=$(if $(wildcard /lib/systemd/system/.),/lib/systemd/system,/usr/lib/systemd/system)
 
-PCCS_CONF=pccs.service
-PCCS_CONF_PATH=$(if $(wildcard /lib/systemd/system/.),/lib/systemd/system,/usr/lib/systemd/system)
-
 RAD_CONF=mpa_registration_tool.service
 RAD_CONF_DEL=mpa_registration_tool.conf
 RAD_CONF_PATH=$(if $(wildcard /lib/systemd/system/.),/lib/systemd/system,/usr/lib/systemd/system)
@@ -168,13 +165,12 @@ ALL_PKGS:= $(AESM_SERVICE_PKGS) $(AE_PKGS) $(DEV_LIB_PKGS)
 
 AUX_TOOL_PKGS:= $(TEE_APPRAISAL_TOOL_PACKAGE) \
                 $(PCS_CLIENT_TOOL_PACKAGE)    \
-                $(PCCS_ADMIN_TOOL_PACKAGE)    \
                 $(POE_GEN_TOOL_PACKAGE)       \
                 $(POE_EVAL_TOOL_PACKAGE)
 
 $(foreach PKG,$(AESM_SERVICE_PKGS) $(AE_PKGS),$(eval $(call INSTALL_AESM_SERVICE_TEMPLATE,$(PKG))))
 $(foreach PKG,$(DEV_LIB_PKGS),$(eval $(call INSTALL_DEV_LIB_TEMPLATE,$(PKG))))
-$(foreach PKG,$(AESM_SERVICE_PKGS) $(AE_PKGS) $(DEV_LIB_PKGS) $(DCAP_PCCS_PACKAGE) $(RA_SERVICE_PACKAGE) $(PCK_ID_RETRIEVAL_TOOL_PACKAGE) $(AUX_TOOL_PKGS),$(eval $(call PRE_INSTALL_TEMPLATE,$(PKG))))
+$(foreach PKG,$(AESM_SERVICE_PKGS) $(AE_PKGS) $(DEV_LIB_PKGS) $(RA_SERVICE_PACKAGE) $(PCK_ID_RETRIEVAL_TOOL_PACKAGE) $(AUX_TOOL_PKGS),$(eval $(call PRE_INSTALL_TEMPLATE,$(PKG))))
 
 # Enclave runtime libraries and developer headers are delegated to sgx-enclave-runtime
 PHONY+=install_enclave_runtime
@@ -210,14 +206,6 @@ install_$(AESM_SERVICE_PACKAGE): $(foreach PKG,$(AESM_SERVICE_PKGS),post_$(PKG))
 	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so.$(PCE_MAJOR_VER))                         && \
 	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so)                                          && \
 	ln -fs liburts_internal.so libsgx_urts.so.$(URTS_MAJOR_VER)
-
-PHONY+=install_$(DCAP_PCCS_PACKAGE)
-install_$(DCAP_PCCS_PACKAGE): pre_$(DCAP_PCCS_PACKAGE) | $(PACKAGE_ROOT_PATH)
-	install -d $(shell readlink -m $(DESTDIR)/$(DCAP_PCCS_PACKAGE)/$(PCCS_CONF_PATH))                        && \
-	cp -f $|/$(DCAP_PCCS_PACKAGE)/$(PCCS_CONF) $(DESTDIR)/$(DCAP_PCCS_PACKAGE)/$(PCCS_CONF_PATH)             && \
-	rm -f $|/$(DCAP_PCCS_PACKAGE)/$(PCCS_CONF)
-	install -d $(shell readlink -m $(DESTDIR)/$(DCAP_PCCS_PACKAGE)/$(SGX_INSTALL_PATH)/$(DCAP_PCCS_PACKAGE)) && \
-	cp -fr $|/$(DCAP_PCCS_PACKAGE)/* $(DESTDIR)/$(DCAP_PCCS_PACKAGE)/$(SGX_INSTALL_PATH)/$(DCAP_PCCS_PACKAGE)
 
 PHONY+=$(RA_SERVICE_PACKAGE)
 $(RA_SERVICE_PACKAGE): pre_$(RA_SERVICE_PACKAGE) | $(PACKAGE_ROOT_PATH)
@@ -323,11 +311,6 @@ install_$(PCS_CLIENT_TOOL_PACKAGE): pre_$(PCS_CLIENT_TOOL_PACKAGE) | $(PACKAGE_R
 	install -d $(shell readlink -m $(DESTDIR)/$(PCS_CLIENT_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCS_CLIENT_TOOL_INSTALL_DIR))
 	cp -fr $|/$(PCS_CLIENT_TOOL_PACKAGE)/* $(DESTDIR)/$(PCS_CLIENT_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCS_CLIENT_TOOL_INSTALL_DIR)
 
-PHONY+=install_$(PCCS_ADMIN_TOOL_PACKAGE)
-install_$(PCCS_ADMIN_TOOL_PACKAGE): pre_$(PCCS_ADMIN_TOOL_PACKAGE) | $(PACKAGE_ROOT_PATH)
-	install -d $(shell readlink -m $(DESTDIR)/$(PCCS_ADMIN_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCCS_ADMIN_TOOL_INSTALL_DIR))
-	cp -fr $|/$(PCCS_ADMIN_TOOL_PACKAGE)/* $(DESTDIR)/$(PCCS_ADMIN_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCCS_ADMIN_TOOL_INSTALL_DIR)
-
 PHONY+=install_$(POE_GEN_TOOL_PACKAGE)
 install_$(POE_GEN_TOOL_PACKAGE): pre_$(POE_GEN_TOOL_PACKAGE) | $(PACKAGE_ROOT_PATH)
 	poe_source="$|/$(POE_GEN_TOOL_PACKAGE)"; \
@@ -354,12 +337,10 @@ install_$(POE_EVAL_TOOL_PACKAGE): pre_$(POE_EVAL_TOOL_PACKAGE) | $(PACKAGE_ROOT_
 
 PHONY+=install
 install: install_$(AESM_SERVICE_PACKAGE)         \
-	install_$(DCAP_PCCS_PACKAGE)             \
 	install_$(RA_SERVICE_PACKAGE)            \
 	install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) \
 	install_$(TEE_APPRAISAL_TOOL_PACKAGE)    \
 	install_$(PCS_CLIENT_TOOL_PACKAGE)       \
-	install_$(PCCS_ADMIN_TOOL_PACKAGE)       \
 	install_$(POE_GEN_TOOL_PACKAGE)          \
 	install_$(POE_EVAL_TOOL_PACKAGE)         \
 	install_ae                               \
