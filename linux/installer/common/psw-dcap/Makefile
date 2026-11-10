@@ -158,15 +158,12 @@ DEV_LIB_PKGS:= $(QUOTE_EX_PACKAGE)           \
                $(RA_NETWORK_PACKAGE)         \
                $(RA_NETWORK_DEV_PACKAGE)     \
                $(RA_UEFI_PACKAGE)            \
-               $(RA_UEFI_DEV_PACKAGE)        \
-               $(POE_LIB_PACKAGE)
+               $(RA_UEFI_DEV_PACKAGE)
 
 ALL_PKGS:= $(AESM_SERVICE_PKGS) $(AE_PKGS) $(DEV_LIB_PKGS)
 
 AUX_TOOL_PKGS:= $(TEE_APPRAISAL_TOOL_PACKAGE) \
-                $(PCS_CLIENT_TOOL_PACKAGE)    \
-                $(POE_GEN_TOOL_PACKAGE)       \
-                $(POE_EVAL_TOOL_PACKAGE)
+                $(PCS_CLIENT_TOOL_PACKAGE)
 
 $(foreach PKG,$(AESM_SERVICE_PKGS) $(AE_PKGS),$(eval $(call INSTALL_AESM_SERVICE_TEMPLATE,$(PKG))))
 $(foreach PKG,$(DEV_LIB_PKGS),$(eval $(call INSTALL_DEV_LIB_TEMPLATE,$(PKG))))
@@ -341,8 +338,6 @@ install: install_$(AESM_SERVICE_PACKAGE)         \
 	install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) \
 	install_$(TEE_APPRAISAL_TOOL_PACKAGE)    \
 	install_$(PCS_CLIENT_TOOL_PACKAGE)       \
-	install_$(POE_GEN_TOOL_PACKAGE)          \
-	install_$(POE_EVAL_TOOL_PACKAGE)         \
 	install_ae                               \
 	install_enclave_runtime                  \
 	install_dev_lib
