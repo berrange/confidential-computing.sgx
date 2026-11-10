@@ -129,11 +129,7 @@ endef
 
 TDX_QGS_PKGS:= $(TDX_QGS_PACKAGE)
 
-AE_PKGS:= $(AE_IDE_PACKAGE)                  \
-          $(AE_PCE_PACKAGE)                  \
-          $(AE_TDQE_PACKAGE)                 \
-          $(AE_QVE_PACKAGE)                  \
-          $(AE_QAE_PACKAGE)
+AE_PKGS:=
 
 DEV_LIB_PKGS:= $(TDX_LOGIC_PACKAGE)          \
                $(TDX_LOGIC_DEV_PACKAGE)      \
@@ -209,9 +205,6 @@ PHONY+=install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)
 install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE): pre_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) | $(PACKAGE_ROOT_PATH)
 	install -d $(shell readlink -m $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)) && \
 	cp -fr $|/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/* $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)
-	cd $(shell readlink -m $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE))         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_id_enclave.signed.so.$(IDE_MAJOR_VER))                                         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so.$(PCE_MAJOR_VER))
 
 PHONY+=install_ae
 install_ae: $(foreach PKG,$(AE_PKGS),post_$(PKG))
@@ -281,7 +274,6 @@ PHONY+=install
 install: install_$(TDX_QGS_PACKAGE)          \
 	install_$(RA_SERVICE_PACKAGE)            \
 	install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) \
-	install_ae                               \
 	install_enclave_runtime                  \
 	install_dev_lib
 	rm -fr $(PACKAGE_ROOT_PATH)

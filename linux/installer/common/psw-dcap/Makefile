@@ -140,11 +140,7 @@ AESM_SERVICE_PKGS:= $(AESM_PCE_PACKAGE)      \
                     $(QE3_LOGIC_PACKAGE)     \
                     $(PCE_LOGIC_PACKAGE)
 
-AE_PKGS:= $(AE_IDE_PACKAGE)                  \
-          $(AE_PCE_PACKAGE)                  \
-          $(AE_QE3_PACKAGE)                  \
-          $(AE_QVE_PACKAGE)                  \
-          $(AE_QAE_PACKAGE)
+AE_PKGS:=
 
 DEV_LIB_PKGS:= $(QUOTE_EX_PACKAGE)           \
                $(QUOTE_EX_DEV_PACKAGE)       \
@@ -196,12 +192,6 @@ install_$(AESM_SERVICE_PACKAGE): $(foreach PKG,$(AESM_SERVICE_PKGS),post_$(PKG))
 		cp -fr $(DESTDIR)/$(AESM_SERVICE_PACKAGE)/$(SGX_INSTALL_PATH)/$(AESM_SERVICE_PACKAGE)/aesm/conf/*    \
 			$(DESTDIR)/$(AESM_SERVICE_PACKAGE)/$(ETC_DIR)                                             && \
 		rm -fr $(DESTDIR)/$(AESM_SERVICE_PACKAGE)/$(SGX_INSTALL_PATH)/$(AESM_SERVICE_PACKAGE)/aesm/conf)
-	cd $(shell readlink -m $(DESTDIR)/$(AESM_ECDSA_PACKAGE)/$(SGX_INSTALL_PATH)/$(AESM_SERVICE_PACKAGE)/aesm) && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_qe3.signed.so.$(QE3_MAJOR_VER))                         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_qe3.signed.so)
-	cd $(shell readlink -m $(DESTDIR)/$(AESM_PCE_PACKAGE)/$(SGX_INSTALL_PATH)/$(AESM_SERVICE_PACKAGE)/aesm)   && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so.$(PCE_MAJOR_VER))                         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so)                                          && \
 	ln -fs liburts_internal.so libsgx_urts.so.$(URTS_MAJOR_VER)
 
 PHONY+=$(RA_SERVICE_PACKAGE)
@@ -227,9 +217,6 @@ PHONY+=install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)
 install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE): pre_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) | $(PACKAGE_ROOT_PATH)
 	install -d $(shell readlink -m $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)) && \
 	cp -fr $|/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/* $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)
-	cd $(shell readlink -m $(DESTDIR)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE)/$(SGX_INSTALL_PATH)/$(PCK_ID_RETRIEVAL_TOOL_PACKAGE))         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_id_enclave.signed.so.$(IDE_MAJOR_VER))                                         && \
-	ln -fs $(shell readlink -m $(USR_LIB_PATH)/libsgx_pce.signed.so.$(PCE_MAJOR_VER))
 
 PHONY+=install_ae
 install_ae: $(foreach PKG,$(AE_PKGS),post_$(PKG))
@@ -338,7 +325,6 @@ install: install_$(AESM_SERVICE_PACKAGE)         \
 	install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) \
 	install_$(TEE_APPRAISAL_TOOL_PACKAGE)    \
 	install_$(PCS_CLIENT_TOOL_PACKAGE)       \
-	install_ae                               \
 	install_enclave_runtime                  \
 	install_dev_lib
 	rm -fr $(PACKAGE_ROOT_PATH)
