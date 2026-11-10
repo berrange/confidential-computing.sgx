@@ -158,8 +158,7 @@ DEV_LIB_PKGS:= $(QUOTE_EX_PACKAGE)           \
 
 ALL_PKGS:= $(AESM_SERVICE_PKGS) $(AE_PKGS) $(DEV_LIB_PKGS)
 
-AUX_TOOL_PKGS:= $(TEE_APPRAISAL_TOOL_PACKAGE) \
-                $(PCS_CLIENT_TOOL_PACKAGE)
+AUX_TOOL_PKGS:= $(PCS_CLIENT_TOOL_PACKAGE)
 
 $(foreach PKG,$(AESM_SERVICE_PKGS) $(AE_PKGS),$(eval $(call INSTALL_AESM_SERVICE_TEMPLATE,$(PKG))))
 $(foreach PKG,$(DEV_LIB_PKGS),$(eval $(call INSTALL_DEV_LIB_TEMPLATE,$(PKG))))
@@ -323,7 +322,6 @@ PHONY+=install
 install: install_$(AESM_SERVICE_PACKAGE)         \
 	install_$(RA_SERVICE_PACKAGE)            \
 	install_$(PCK_ID_RETRIEVAL_TOOL_PACKAGE) \
-	install_$(TEE_APPRAISAL_TOOL_PACKAGE)    \
 	install_$(PCS_CLIENT_TOOL_PACKAGE)       \
 	install_enclave_runtime                  \
 	install_dev_lib
